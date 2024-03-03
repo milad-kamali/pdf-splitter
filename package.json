@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "nuxt build && gh-pages -d dist"
   },
   "dependencies": {
     "nuxt": "^3.10.3",
@@ -16,8 +17,15 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@vite-pwa/nuxt": "^0.5.0",
     "autoprefixer": "^10.4.17",
+    "gh-pages": "^6.1.1",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1"
+  },
+  "gh-pages": {
+    "branch": "master",
+    "repo": "https://github.com/milad-kamali/pdf-splitter.git",
+    "message": "Deployed using gh-pages"
   }
 }
