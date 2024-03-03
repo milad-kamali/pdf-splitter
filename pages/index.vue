@@ -4,7 +4,7 @@
     <iframe
       :src="pdfSrc"
       width="90%"
-      height="700"
+      height="550"
       class="border mx-auto my-5"
     />
     <input
@@ -23,12 +23,12 @@
           type="number"
           min="1"
           class="border mx-3"
-          @change="splitAndDownload"
+          @change="split"
         />
       </label>
       <!-- <button
         class="border bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors"
-        @click="splitAndDownload"
+        @click="split"
       >
         جدا سازی
       </button> -->
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib'
 
 export default {
   data () {
@@ -63,14 +63,13 @@ export default {
   methods: {
     handleFileChange (event) {
       this.selectedFiles.value = event.target.files[0];
-      this.splitAndDownload()
+      this.split()
     },
 
-    async splitAndDownload () {
+    async split () {
       const pdfBytes = await this.readPDF(this.selectedFiles.value);
       const pdfDoc = await PDFDocument.load(pdfBytes);
 
-      // const pageSize = 3; // تعداد صفحات در هر فایل جدید
       const pageCount = pdfDoc.getPageCount();
       this.fileCount = Math.ceil(pageCount / this.pageSize);
 
@@ -86,17 +85,14 @@ export default {
         copiedPages.forEach((page) => newPdf.addPage(page));
 
         const newPdfBytes = await newPdf.save();
-        // const outputFileName = `file_${i + 1}.pdf`;
 
         const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
         const dataUrl = URL.createObjectURL(blob);
 
         this.generatedFiles.value.push({
-          // name: outputFileName,
           name: '',
-          url: dataUrl,
+          url: dataUrl
         });
-        
       }
       // for (const file of this.generatedFiles.value) {
       //   const LINK = document.createElement('a')
@@ -115,6 +111,7 @@ export default {
         reader.readAsArrayBuffer(file);
       });
     },
+
     nextFile () {
       if (this.currentFileIndex < this.fileCount) {
         this.generatedFiles.value[this.currentFileIndex].name = this.fileName

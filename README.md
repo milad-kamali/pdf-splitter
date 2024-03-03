@@ -5,6 +5,8 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 ## Setup
 ### Node Version = 18.0.0
 
+## Developed by: Milad Kamali
+
 Make sure to install the dependencies:
 
 ```bash
