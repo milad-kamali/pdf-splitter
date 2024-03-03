@@ -3,7 +3,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   app: {
-    baseURL: '/milad-kamali.github.io/', // baseURL: '/<repository>/'
+    baseURL: 'https://wondrous-bubblegum-94374c.netlify.app/', // baseURL: '/<repository>/'
     buildAssetsDir: 'assets', // don't use "_" at the begining of the folder name to avoids nojkill conflict
   },
   css: ['~/assets/css/main.css'],
