@@ -63,6 +63,9 @@ export default {
   methods: {
     handleFileChange (event) {
       this.selectedFiles.value = event.target.files[0];
+      this.fileNames = ['']
+      this.fileName = ''
+      this.currentFileIndex = 0
       this.split()
     },
 
@@ -74,7 +77,6 @@ export default {
       this.fileCount = Math.ceil(pageCount / this.pageSize);
 
       this.generatedFiles.value = [];
-      this.fileNames = ['']
 
       for (let i = 0; i < this.fileCount; i++) {
         const startPageIndex = i * this.pageSize;
@@ -119,7 +121,6 @@ export default {
         this.fileName = this.generatedFiles.value[this.currentFileIndex].name
         // this.fileName = this.fileNames[this.currentFileIndex]
         this.pdfSrc = this.generatedFiles.value[this.currentFileIndex].url
-        console.log(this.generatedFiles);
       }
     },
     previousFile () {
@@ -145,7 +146,7 @@ export default {
 <style>
   @font-face {
     font-family: "vazirmatn";
-    src: url('/Vazirmatn-VariableFont_wght.ttf') format("ttf");
+    src: url('./Vazirmatn-VariableFont_wght.ttf') format("ttf");
   }
   * {
     font-family: 'vazirmatn';
