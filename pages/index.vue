@@ -1,43 +1,82 @@
 <template>
-  <div class="flex flex-col items-center">
-    <div class="mt-5 font-semibold">تعداد بارنامه ها: {{ fileCount }}</div>
-    <iframe
-      :src="pdfSrc"
-      width="90%"
-      height="550"
-      class="border mx-auto my-5"
-    />
+  <div class="relative flex flex-col items-center">
+    <div class="font-semibold text-center ml-auto mr-20 mt-2">
+      تعداد فایل ها: {{ fileCount }}
+    </div>
+    <div class="grid grid-cols-12 w-full mt-1 mb-5 gap-x-2" style="height: 550px;">
+      <iframe
+        :src="pdfSrc"
+        width="100%"
+        height="100%"
+        class="col-span-10 border border-gray-300 rounded"
+      />
+      <div class="col-span-2" style="height: 550px">
+        <div class="grid gap-y-2 h-full overflow-y-auto">
+          <div
+            v-for="(file, i) in generatedFiles?.value"
+            :key="i"
+            class="flex flex-col border border-gray-300 text-center text-gray-400 rounded cursor-pointer"
+            :class="i === currentFileIndex ? 'border-2 border-gray-700' : null"
+            @click="changeCurrentFile(i)"
+          >
+            <i class='bx bxs-file-pdf text-6xl' />
+            <div>
+              {{ file.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <input
-      placeholder="عنوان"
       v-model="fileName"
-      class="text-xl border p-1"
+      placeholder="عنوان"
+      class="col-span-3 text-xl border p-1 rounded"
       @keydown.right="nextFile"
       @keydown.left="previousFile"
     />
-    <div class="items-center mt-3">
-      <input type="file" @change="handleFileChange" />
-      <label>
-        تعداد صفحات
+    <div
+      class="fixed bottom-0 grid grid-cols-12 w-full rounded-t-2xl px-5 py-2 shadow-lg"
+      style="box-shadow: 0px -2px 12px 0px #0000002e;"
+    >
         <input
-          v-model="pageSize"
-          type="number"
-          min="1"
-          class="border mx-3"
-          @change="split"
+          ref="inputFile"
+          type="file"
+          accept=".pdf"
+          class="col-span-4 my-auto"
+          title="انتخاب فایل"
+          @change="handleFileChange"
         />
-      </label>
-      <!-- <button
-        class="border bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors"
-        @click="split"
-      >
-        جدا سازی
-      </button> -->
-      <button
-        class="border bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1 transition-colors"
-        @click="downloadFiles"
-      >
-        دانلود
-      </button>
+        <!-- <div
+          class="col-span-4 flex items-center text-gray-500 rounded cursor-pointer"
+          @click="selectFile"
+        >
+          <i class="bx bx-file-blank text-lg mr-2" />
+          {{ selectedFiles?.value?.name || "انتخاب فایل" }}
+        </div> -->
+        <div class="col-span-4 flex items-center justify-center">
+          <label
+            class="flex"
+            title="تعداد صفحه در فایل"
+          >
+            <i class="bx bx-cut text-2xl" />
+            <input
+              v-model="pageSize"
+              type="number"
+              min="1"
+              class="w-20 border ml-2 p-1 rounded"
+              @change="split"
+            />
+          </label>
+        </div>
+        <div class="col-span-4 flex justify-end">
+        <button
+          class="flex items-center justify-center w-12 h-12 border bg-red-500 hover:bg-red-600 text-xl text-white rounded-full transition-colors"
+          title="دانلود"
+          @click="downloadFiles"
+        >
+          <i class="bx bxs-download" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -61,14 +100,13 @@ export default {
     }
   },
   methods: {
+    selectFile () {
+      this.$refs.inputFile.click()
+    },
     handleFileChange (event) {
       this.selectedFiles.value = event.target.files[0];
-      this.fileNames = ['']
-      this.fileName = ''
-      this.currentFileIndex = 0
       this.split()
     },
-
     async split () {
       const pdfBytes = await this.readPDF(this.selectedFiles.value);
       const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -76,6 +114,9 @@ export default {
       const pageCount = pdfDoc.getPageCount();
       this.fileCount = Math.ceil(pageCount / this.pageSize);
 
+      this.fileNames = ['']
+      this.fileName = ''
+      this.currentFileIndex = 0
       this.generatedFiles.value = [];
 
       for (let i = 0; i < this.fileCount; i++) {
@@ -96,15 +137,8 @@ export default {
           url: dataUrl
         });
       }
-      // for (const file of this.generatedFiles.value) {
-      //   const LINK = document.createElement('a')
-      //   LINK.href = file.url
-      //   LINK.download = file.name
-      //   LINK.click()
-      // }
       this.pdfSrc = this.generatedFiles.value[0].url
     },
-
     async readPDF (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -113,13 +147,11 @@ export default {
         reader.readAsArrayBuffer(file);
       });
     },
-
     nextFile () {
       if (this.currentFileIndex < this.fileCount) {
         this.generatedFiles.value[this.currentFileIndex].name = this.fileName
         this.currentFileIndex++
         this.fileName = this.generatedFiles.value[this.currentFileIndex].name
-        // this.fileName = this.fileNames[this.currentFileIndex]
         this.pdfSrc = this.generatedFiles.value[this.currentFileIndex].url
       }
     },
@@ -138,6 +170,12 @@ export default {
         LINK.download = file.name
         LINK.click()
       }
+    },
+    changeCurrentFile (i) {
+      this.generatedFiles.value[this.currentFileIndex].name = this.fileName
+      this.currentFileIndex = i
+      this.fileName = this.generatedFiles.value[this.currentFileIndex].name
+      this.pdfSrc = this.generatedFiles.value[this.currentFileIndex].url
     }
   }
 }
