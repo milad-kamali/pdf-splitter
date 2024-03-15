@@ -33,6 +33,7 @@
       class="col-span-3 text-xl border p-1 rounded"
       @keydown.right="nextFile"
       @keydown.left="previousFile"
+      @keydown.enter="nextFile"
     />
     <div
       class="fixed bottom-0 grid grid-cols-12 w-full rounded-t-2xl px-5 py-2 shadow-lg"
