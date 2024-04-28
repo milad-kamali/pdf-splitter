@@ -3,7 +3,7 @@
     <div class="font-semibold text-center ml-auto mr-20 mt-2">
       تعداد فایل ها: {{ fileCount }}
     </div>
-    <div class="grid grid-cols-12 w-full mt-1 mb-5 gap-x-2" style="height: 550px;">
+    <div id="pdfContainer" class="grid grid-cols-12 w-full mt-1 mb-5 gap-x-2">
       <iframe
         :src="pdfSrc"
         width="100%"
@@ -100,6 +100,9 @@ export default {
       currentFileIndex: 0
     }
   },
+  beforeMount () {
+    document.getElementById('pdfContainer').style.height = (window.innerHeight * 0.75) + 'px'
+  },
   methods: {
     selectFile () {
       this.$refs.inputFile.click()
@@ -149,11 +152,13 @@ export default {
       });
     },
     nextFile () {
-      if (this.currentFileIndex < this.fileCount) {
+      if (this.currentFileIndex < this.fileCount-1) {
         this.generatedFiles.value[this.currentFileIndex].name = this.fileName
         this.currentFileIndex++
         this.fileName = this.generatedFiles.value[this.currentFileIndex].name
         this.pdfSrc = this.generatedFiles.value[this.currentFileIndex].url
+      } else {
+        this.generatedFiles.value[this.currentFileIndex].name = this.fileName
       }
     },
     previousFile () {
