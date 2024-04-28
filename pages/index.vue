@@ -15,7 +15,7 @@
           <div
             v-for="(file, i) in generatedFiles?.value"
             :key="i"
-            class="flex flex-col border border-gray-300 text-center text-gray-400 rounded cursor-pointer"
+            class="flex flex-col h-fit border border-gray-300 text-center text-gray-400 rounded cursor-pointer"
             :class="i === currentFileIndex ? 'border-2 border-gray-700' : null"
             @click="changeCurrentFile(i)"
           >
@@ -93,7 +93,7 @@ export default {
       },
       generatedFiles: [],
       fileCount: 0,
-      pageSize: 1,
+      pageSize: 3,
       pdfSrc: null,
       fileNames: [''],
       fileName: '',
