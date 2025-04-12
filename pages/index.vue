@@ -1,7 +1,7 @@
 <template>
   <div class="relative flex flex-col items-center">
     <div class="font-semibold text-center ml-auto mr-20 mt-2">
-      تعداد فایل ها: {{ fileCount }}
+      تعداد فایل ها: {{ currentFileIndex + 1 + '/' + fileCount }}
     </div>
     <div id="pdfContainer" class="grid grid-cols-12 w-full mt-1 mb-5 gap-x-2">
       <iframe
