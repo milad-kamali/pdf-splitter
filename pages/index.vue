@@ -169,13 +169,30 @@ export default {
         this.pdfSrc = this.generatedFiles.value[this.currentFileIndex].url
       }
     },
-    downloadFiles () {
-      for (const file of this.generatedFiles.value) {
-        const LINK = document.createElement('a')
-        LINK.href = file.url
-        LINK.download = file.name
-        LINK.click()
+    async downloadFiles () {
+      const files = this.generatedFiles.value;
+      for (let i = 0; i < files.length; i++) {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = files[i].url;
+            link.download = files[i].name;
+            // برای برخی مرورگرها نیاز به اضافه شدن به DOM است
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // آزادسازی حافظه اگر از Blob URL استفاده می‌کنید
+            setTimeout(() => URL.revokeObjectURL(files[i].url), 100);
+            resolve();
+          }, 100);
+        });
       }
+      // for (const file of this.generatedFiles.value) {
+      //   const LINK = document.createElement('a')
+      //   LINK.href = file.url
+      //   LINK.download = file.name
+      //   LINK.click()
+      // }
     },
     changeCurrentFile (i) {
       this.generatedFiles.value[this.currentFileIndex].name = this.fileName
